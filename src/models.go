@@ -5,9 +5,9 @@ package main
 *	Subscriber Model
 */
 type Subscriber struct {
-	id				int		`json:"id,omitempty"`
-	username 		string  `json:"username,omitempty"`
-	name 			string  `json:"name,omitempty"`
+	Username 		string  `json:"username,omitempty"`
+	Id				int		`json:"id,omitempty"`
+	Feed			*Feed 	`json:"feed,omitempty"`
 	
 }
 
@@ -15,12 +15,13 @@ type Subscriber struct {
 *	Feed Model
 */
 type Feed struct {
-	id				int		`json:"id,omitempty`
-	publisher		string	`json:"publisher,omitempty"`
-	title			string	`json:"title,omitempty"`
-	url				string	`json:"url,omitempty"`
-	topic			string	`json:topic,omitempty`
+	Id			int		`json:"id,omitempty`
+	Publisher	string	`json:"publisher,omitempty"`
+	Title		string	`json:"title,omitempty"`
+	Url			string	`json:"url,omitempty"`
+	Topic		string	`json:topic,omitempty`
+	Subscriber	*Subscriber `json:"subscriber,omitempty"`
 }
 
-var Subscribers		[]Subscriber
-var Feeds 			[]Feed
+type Subscribers		[]Subscriber
+type Feeds 				[]Feed

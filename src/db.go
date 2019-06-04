@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"encoding/json"
 	"strconv"
-
 	"github.com/go-redis/redis"
 )
 
@@ -12,15 +11,20 @@ import (
 *	Redis Connection
 */
 
+var client *redis.Client
+
 func redisConnnection() {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", 
-		DB:       0,  
+		DB:       0, 
 	})
 
 	pong, err := client.Ping().Result()
 	fmt.Println(pong, err)
+	if err != nil {
+		panic(err)
+	}
 	
 }
 
@@ -73,8 +77,6 @@ func findAllFeeds() feeds {
 
 	return feeds
 }
-
-
 
 func createFeed(f Feed) {
 	
