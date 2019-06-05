@@ -8,7 +8,6 @@ type Subscriber struct {
 	Username 		string  `json:"username,omitempty"`
 	Id				int		`json:"id,omitempty"`
 	Feed			*Feed 	`json:"feed,omitempty"`
-	
 }
 
 /*
@@ -20,7 +19,6 @@ type Feed struct {
 	Title		string	`json:"title,omitempty"`
 	Url			string	`json:"url,omitempty"`
 	Topic		string	`json:topic,omitempty`
-	Subscriber	*Subscriber `json:"subscriber,omitempty"`
 }
 
 type Subscribers		[]Subscriber

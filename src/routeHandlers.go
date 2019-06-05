@@ -11,8 +11,8 @@ import (
 *	Requuest Handlers
 */
 func getAllFeeds(w http.ResponseWriter, req *http.Request){
-
-	var feeds Feeds
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
 
 	// call to func findAllFeeds() feeds
 	feeds := findAllFeeds()
@@ -27,11 +27,14 @@ func getAllFeeds(w http.ResponseWriter, req *http.Request){
 
 
 func getFeed(w http.ResponseWriter, req *http.Request){
-
+	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(req)
 	id, err := strconv.Atoi(params["id"])
-
+	if err != nil {
+		panic(err)
+	}
 	
+
 
 	var feed Feed
 
@@ -43,7 +46,8 @@ func getFeed(w http.ResponseWriter, req *http.Request){
 func createFeed(w http.ResponseWriter, req *http.Request){
 	var feed Feed
 	
-	params := mux.Vars(req)
+	//params := mux.Vars(req)
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 
 	
 

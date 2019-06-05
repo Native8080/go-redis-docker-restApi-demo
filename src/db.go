@@ -21,7 +21,6 @@ func redisConnnection() {
 	})
 
 	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)
 	if err != nil {
 		panic(err)
 	}
@@ -33,50 +32,86 @@ func redisConnnection() {
 */
 func initData() {
 			   
-	createFeed(Feed{
-		Subscriber: Subscriber{
-			username: "Logan",
-			id: "101"
+	createFeed(Subscriber{
+		username: "Morpheus",
+		id: "101",	
+		Feed: Feed{
+			id: "2",
+			publisher: "Fast Company",
+			title: "Sucessful Startups without VC Funding",
+			url: "http://foo.com",
+			topic: "Business",	
 		},
-		id: "1"
-		publisher: "Design Milk",
-		title: "Augmented Reality Startups",
-		url: "http://foo.com",
-		topic: "Design"
+	}),
+	createFeed(Subscriber{
+		username: "Logan",
+		id: "102",	
+		Feed: Feed{
+			id: "2",
+			publisher: "Design Milk",
+			title: "Augmented Reality Startups",
+			url: "http://foo.com",
+			topic: "Design",	
+		},
 	})
 
-	createFeed(Feed{
-		Subscriber: Subscriber{
-			username: "Morpheus",
-			id: "102"
-		},
-		id: "2"
-		publisher: "Fast Company",
-		title: "Sucessful Startups without VC Funding",
-		url: "http://foo.com",
-		topic: "Business"
-	})
 }
+
+
+
 
 
 func findFeed(id int) Feed {
+	
 	var feed Feed
 
-	c := redisConnnection()
-	defer c.Close()
+	//client := redisConnnection()
+	defer client.Close()
+
+	//keys, err := client.Do("KEYS", "post:*")
+	//HandleError(err)
+
+
 }
+
+
+
+
 
 func findAllFeeds() feeds {
 
-	var feeds Feed
+	var feeds Feeds
 
-	c := redisConnnection()
-	defer c.Close()
+	defer client.Close()
 
 	
+	hashMap, err := client.HgetAll("username:*").Result()
+	if err != nil {
+		return err
+	}
+
+	for key, value := range hashMap {
+		var feed Feed
+
+		reply, err := client.Hget("",)
+		// Handle Error
+
+		if err := json.Unmarshall(reply, &feed); err != nil {
+			panic(err)
+		}
+
+		feeds = append(feeds, feed)
+	}
 
 	return feeds
 }
+
+
+
+
+
+
+
 
 func createFeed(f Feed) {
 	
