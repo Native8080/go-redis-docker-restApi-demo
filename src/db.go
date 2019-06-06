@@ -42,7 +42,8 @@ func initData() {
 			url: "http://foo.com",
 			topic: "Business",	
 		},
-	}),
+	})
+
 	createFeed(Subscriber{
 		username: "Logan",
 		id: "102",	
@@ -58,25 +59,23 @@ func initData() {
 }
 
 
-
-
-
-func findFeed(id int) Feed {
+func findFeed(s string, id int) Feed {
 	
-	var feed Feed
+	var subscriber Subscriber
 
-	//client := redisConnnection()
+	key := fmt.Sprintf("%d:%d", subcriber, id)
+
 	defer client.Close()
 
-	//keys, err := client.Do("KEYS", "post:*")
+	val, err := client.HGetAll(key).Result()
 	//HandleError(err)
+
+	json.Unmarshall([]byte(val), &subscriber)
+
+	return subscriber
 
 
 }
-
-
-
-
 
 func findAllFeeds() feeds {
 
@@ -85,18 +84,20 @@ func findAllFeeds() feeds {
 	defer client.Close()
 
 	
-	hashMap, err := client.HgetAll("username:*").Result()
+	keys, err := client.Keys("username:*").Result()
 	if err != nil {
 		return err
 	}
 
-	for key, value := range hashMap {
+	for _, key := range keys {
 		var feed Feed
 
-		reply, err := client.Hget("",)
-		// Handle Error
+		val, err := client.Get(key).Result()
+		if err != nil {
+			return err
+		}
 
-		if err := json.Unmarshall(reply, &feed); err != nil {
+		if err := json.Unmarshall([]byte(val), &feed); err != nil {
 			panic(err)
 		}
 
@@ -106,24 +107,34 @@ func findAllFeeds() feeds {
 	return feeds
 }
 
+func createFeed(subcriber Subscriber) {
 
-
-
-
-
-
-
-func createFeed(f Feed) {
+	//c := RedisConnect()
+	defer client.Close()	
 	
-	c := RedisConnect()
-	defer c.Close()
-	
-	
-	// Save JSON blob to Redis
-	reply, err := c.Do("HMSET", )
-	HandleError(err)
-	
-	fmt.Println("HMGETALL ", reply)
+	bytes, error := json.Marshall(subcriber)
+	if err != nil {
+		return err
+	}
 
+	// redis key format
+	// subscriberUsername:subscriberId
+
+	key := fmt.Sprintf("%s:%s", s.Username, s.Id)
+	val := string(bytes)
+	err := client.Set(key, val, 0).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func removeFeed(s Subscriber) Subscribers {
+
+}
+
+func updateFeed(s Subscriber) Subscribers {
 
 }
