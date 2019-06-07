@@ -14,12 +14,9 @@ func getAllFeeds(w http.ResponseWriter, req *http.Request){
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 
-	// call to func findAllFeeds() feeds
-	feeds := findAllFeeds()
-	// do proper error checking & logging / sent proper
-	// status codes in json for error
-	// Switch to Marshall instead of encode
-	if err := json.NewEncoder(w).Encode(feeds); err != nil {
+	subscribers := findAllFeeds()
+
+	if err := json.NewEncoder(w).Encode(subscribers); err != nil {
 		panic(err)
 	}
 
@@ -27,34 +24,48 @@ func getAllFeeds(w http.ResponseWriter, req *http.Request){
 
 
 func getFeed(w http.ResponseWriter, req *http.Request){
-	w.Header().Set("Content-Type", "application/json")
+
 	params := mux.Vars(req)
+	sub, err := params["subscriber"]
 	id, err := strconv.Atoi(params["id"])
 	if err != nil {
 		panic(err)
 	}
-	
 
+	subscrbr := findFeed(sub, id)
 
-	var feed Feed
-
-	// call findFeed(id int) Feed
-	feed := findFeed(id int)
+	if err := json.NewEncoder(w).Encode(subscrbr); err != nil {
+		panic(err)
+	}
 
 }
 
-func createFeed(w http.ResponseWriter, req *http.Request){
-	var feed Feed
+func postFeed(w http.ResponseWriter, req *http.Request){
+	var subscriber Subscriber
 	
-	//params := mux.Vars(req)
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
-
+	if err != nil {
+		panic(err)
+	}
 	
+	defer client.Body.Close()
 
-	// call func createFeed(f Feed)
-	createFeed(feed)
+	if err := json.UnMarshal(body, &subscriber); err != nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(422)
+		
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)		
+		}
 
+	}
+
+	createFeed(subscriber)
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusCreated)
 }
+
 
 func updateFeed(w http.ResponseWriter, req *http.Request){
 	params := mux.Vars(req)
